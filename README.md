@@ -38,11 +38,9 @@ The pipeline currently needs these inputs from the user:
 
 ### Downloading and annotating genomes
 
-WORK IN PROGRESS
-
 Execute the following in the MakeGNU root directory. The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` instead of `-p` and if you want to see the reason for each rule use `-r`
 
-    snakemake -p --use-conda --configfile test_config.yaml all_preprocess
+    snakemake --configfile test_config.yaml -npr --use-conda all_preprocess
     
   
    
