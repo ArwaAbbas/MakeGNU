@@ -7,21 +7,22 @@ This workflow allows for downloading of microbial genome sequences, annotation w
 ### Installing the pipeline
 
     git clone https://github.com/ArwaAbbas/MakeGNU
+    cd MakeGNU
 
 ### Creating the environment
 
 For most of the tools used in the pipeline, a separate conda environment is created when the rule runs. However, because of [this issue](https://github.com/tseemann/prokka/issues/453) in prokka, a little bit of finagling is necessary at the moment. First, we'll create the base snakemake environment:
 
-    conda create -c bioconda -c conda-forge -n EnvironmentName snakemake
-    conda activate EnvironmentName
+    conda create -c bioconda -c conda-forge -n MakeGNU snakemake
+    conda activate MakeGNU
     
 Then we'll add prokka to the base environment and manually replace the outdated script. 
 
     conda install -c conda-forge -c bioconda -c defaults prokka=1.14.5
     wget ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/linux64.tbl2asn.gz -O linux64.tbl2asn.gz 
     gunzip linux64.tbl2asn.gz
-    mv linux64.tbl2asn ~/miniconda3/envs/EnvironmentName/bin/tbl2asn
-    chmod +x ~/miniconda3/envs/prokka/EnvironmentName/tbl2asn
+    mv linux64.tbl2asn ~/miniconda3/envs/MakeGNU/bin/tbl2asn
+    chmod +x ~/miniconda3/envs/prokka/MakeGNU/tbl2asn
 
 The path to the location of the script to replace may be slightly different depending on whether you're using anaconda, miniconda, conda, etc.
 
