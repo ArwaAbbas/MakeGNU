@@ -1,0 +1,4 @@
+channels:
+ - bioconda
+dependencies:
+ - whatsgnu=1.0
