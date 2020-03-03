@@ -33,6 +33,14 @@ The pipeline currently needs these inputs from the user:
 2. Query proteome .faa files in  (file names must match those in config file)
 3. Two CSV files that map names of .faa and .gff files (usually something like "GCA_#########.#.faa/gff" to a biologist-friendly strain name). See documentation in WhatsGNU for more details.
 4. A reference proteome for the organism of interest
+
+A schematic for how to structure the directory prior to running:
+
+* Data
+    * Queries 
+    * References
+    * strain_name_list_faa.csv
+    * strain_name_list_gff.csv
     
 ## Test run
 
@@ -40,10 +48,34 @@ The pipeline currently needs these inputs from the user:
 
 Execute the following in the MakeGNU root directory. The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` instead of `-p` and if you want to see the reason for each rule use `-r`
 
-    snakemake --configfile test_config.yaml -npr --use-conda all_preprocess
+    snakemake --configfile test_config.yaml --use-conda download_genomes
+    snakemake --configfile test_config.yaml unzip_genome_files
+    snakemake --configfile test_config.yaml --use-conda all_database_processing
+
+The directory structure should now look similar to this. New output files are **bolded**
+
+* Data
+    * **Genomes**
+    * Queries
+    * References
+    * strain_name_list_faa.csv
+    * strain_name_list_gff.csv
+    * **genome_list.txt**
+* Results
+    * **Annotations**
+        * prokka_GENOMEID (contains all prokka output files)
+        * **all_modified_faa**
+            * **all_modified.faa**
+        * **all_modified_gff**
+            * **all_modified.gff**
     
+`all_modified.faa` and `all_modified.gff` are the database(s) of annotated proteins for your genomes of interest.
+
+### Creating a basic report
+
+COMING SOON
+ 
   
-   
    
  
 
