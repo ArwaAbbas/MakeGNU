@@ -39,26 +39,29 @@ A schematic for how to structure the directory prior to running:
 * Data
     * Queries 
     * References
+    * Dummy_query (contains a small faa file used to help create the WhatsGNU database)
     * strain_name_list_faa.csv
     * strain_name_list_gff.csv
+    
     
 ## Test run
 
 ### Downloading and annotating genomes
 
-Execute the following in the MakeGNU root directory. The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` instead of `-p` and if you want to see the reason for each rule use `-r`
+Execute the following in the MakeGNU root directory. The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` instead of `-p` and if you want to see the reason for each rule use `-r`. [Sometimes](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#some-command-line-arguments-like-config-cannot-be-followed-by-rule-or-file-targets-is-that-intended-behavior), specifying the rule directly after the `--configfile` argument parser leads to errors.
 
     snakemake --configfile test_config.yaml --use-conda download_genomes
     snakemake --configfile test_config.yaml --use-conda unzip_genome_files
     snakemake --configfile test_config.yaml --use-conda rename_genome_files
     snakemake --configfile test_config.yaml --use-conda all_database_processing
 
-The directory structure should now look similar to this. New output files are **bolded**
+The directory structure should now look similar to this. New output is **bolded**
 
 * Data
     * **Genomes**
     * Queries
     * References
+    * Dummy_query
     * strain_name_list_faa.csv
     * strain_name_list_gff.csv
     * **genome_list.txt**
@@ -66,15 +69,39 @@ The directory structure should now look similar to this. New output files are **
     * **Annotations**
         * prokka_GENOMEID (contains all prokka output files)
         * **all_modified_faa**
-            * **all_modified.faa**
         * **all_modified_gff**
-            * **all_modified.gff**
-    
-`all_modified.faa` and `all_modified.gff` are the database(s) of annotated proteins for your genomes of interest.
-
+  
 ### Creating a basic report
+    
+    snakemake --configfile test_config.yaml --use-conda all_basic
+    
+### Creating an ortholog report
 
-COMING SOON
+    snakemake --configfile test_config.yaml --use-conda analyze_pangenome
+    snakemake --configfile test_config.yaml --use-conda roary_cleanup
+    snakemake --configfile test_config.yaml --use-conda all_ortholog
+  
+  Final directory structure should look like this:
+  
+  * Data
+    * Genomes
+    * Queries
+    * References
+    * Dummy_query
+* Results
+    * Annotations
+        * prokka_GENOMEID 
+        * all_modified_faa
+        * all_modified_gff
+    * **Roary**
+    * **WhatsGNU_db**
+    * **WhatsGNU_basic_results**
+    * **WhatsGNU_ortholog_results**
+ 
+    
+    
+
+
  
   
    
