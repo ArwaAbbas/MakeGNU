@@ -1,6 +1,8 @@
+data: "TestData"
+output: "TestResults"
+reference: "/TestData/ReferenceProteome/UniProt_R20291.fasta"
 genomes: 
  - 'GCA_000009205.2' 
  - 'GCA_003095675.1'
-
 queries:
- - 'GCA_000828235.1'
+ - 'test'
