@@ -1,0 +1,4 @@
+.snakemake/
+TestResults/
+TestData/genome_list.txt
+TestData/Genomes
