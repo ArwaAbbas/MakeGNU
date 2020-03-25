@@ -1,6 +1,6 @@
 # MakeGNU
-Snakemake pipeline for implementing WhatsGNU
-This [Snakemake](https://snakemake.readthedocs.io/en/stable/index.html) workflow allows for downloading of microbial genome sequences, annotation with [prokka](https://github.com/tseemann/prokka), pangenome analysis with [Roary](https://github.com/sanger-pathogens/Roary) and investigation of proteomic novelty with [WhatsGNU](https://github.com/ahmedmagds/WhatsGNU)
+Snakemake pipeline for implementing WhatsGNU.
+This [Snakemake](https://snakemake.readthedocs.io/en/stable/index.html) workflow allows for downloading of microbial genome sequences, annotation with [prokka](https://github.com/tseemann/prokka), pangenome analysis with [Roary](https://github.com/sanger-pathogens/Roary) and investigation of proteomic novelty with [WhatsGNU](https://github.com/ahmedmagds/WhatsGNU).
 
 ## Set Up
 
@@ -22,7 +22,7 @@ Then we'll add prokka to the base environment and manually replace the outdated 
     wget ftp://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/linux64.tbl2asn.gz -O linux64.tbl2asn.gz 
     gunzip linux64.tbl2asn.gz
     mv linux64.tbl2asn ~/anaconda3/envs/MakeGNU/bin/tbl2asn
-    chmod +x ~/anaconda3/envs//MakeGNU/bin/tbl2asn
+    chmod +x ~/anaconda3/envs/MakeGNU/bin/tbl2asn
 
 The path to the location of the script to replace may be slightly different depending on whether you're using anaconda, miniconda, conda, etc.
 
@@ -30,9 +30,9 @@ The path to the location of the script to replace may be slightly different depe
 
 The pipeline currently needs these inputs from the user:
 1. A `config.yaml` that contains a list of genomes to be downloaded and a list of queries to be analyzed.
-2. Query proteome .faa files in  (file names must match those in config file)
+2. Query proteome .faa files in  (file names must match those in config file). If the user is beginning with the nucleotide sequence of a whole genome assembly, they can optionally use prokka to annotate the genome and create the ".faa" files.
 3. Two CSV files that map names of .faa and .gff files (usually something like "GCA_#########.#.faa/gff" to a biologist-friendly strain name). See documentation in WhatsGNU for more details.
-4. A reference proteome for the organism of interest
+4. A reference proteome for the organism of interest. 
 
 A schematic for how to structure the directory prior to running:
 
