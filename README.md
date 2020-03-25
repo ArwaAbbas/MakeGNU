@@ -51,8 +51,8 @@ A schematic for how to structure the directory prior to running:
 Execute the following in the MakeGNU root directory. The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` instead of `-p` and if you want to see the reason for each rule use `-r`. [Sometimes](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#some-command-line-arguments-like-config-cannot-be-followed-by-rule-or-file-targets-is-that-intended-behavior), specifying the rule directly after the `--configfile` argument parser leads to errors.
 
     snakemake --configfile test_config.yaml --use-conda download_genomes
-    snakemake --configfile test_config.yaml --use-conda unzip_genome_files
-    snakemake --configfile test_config.yaml --use-conda rename_genome_files
+    snakemake --configfile test_config.yaml unzip_genome_files
+    snakemake --configfile test_config.yaml rename_genome_files
     snakemake --configfile test_config.yaml --use-conda all_database_processing
 
 The directory structure should now look similar to this. New output is **bolded**
