@@ -29,38 +29,56 @@ The path to the location of the script to replace may be slightly different depe
 ### Preparing inputs and configuration files
 
 The pipeline currently needs these inputs from the user:
-1. A `config.yaml` that contains a list of genomes to be downloaded and a list of queries to be analyzed.
-2. Query proteome .faa files in  (file names must match those in config file). If the user is beginning with the nucleotide sequence of a whole genome assembly, they can optionally use prokka to annotate the genome and create the ".faa" files.
+1. A `config.yaml` that contains some fields the user will modify to run.
+2. Query proteome ".faa" files. The names of the queries will be specified in the config folder. If the user is beginning with the nucleotide sequence of a whole genome assembly (see below), they can optionally use prokka to annotate the genome and create the ".faa" files.
 3. Two CSV files that map names of .faa and .gff files (usually something like "GCA_#########.#.faa/gff" to a biologist-friendly strain name). See documentation in WhatsGNU for more details.
-4. A reference proteome for the organism of interest. 
+4. A reference proteome for the organism of interest. Currently this is REQUIRED for MakeGNU to run.
+    
+## A Working Example Using the Test Data
 
-A schematic for how to structure the directory prior to running:
+This is how the directory looks like prior to running any rules:
 
 * Data
-    * Queries 
-    * References
+    * Query_fna (contains microbial genomes)
+    * ReferenceProteome (contains the reference proteome from a bacterial strain)
     * Dummy_query (contains a small faa file used to help create the WhatsGNU database)
     * strain_name_list_faa.csv
     * strain_name_list_gff.csv
-    
-    
-## Test run
 
-### Downloading and annotating genomes
+### Annotating bacterial genomes to be queried
+If you are starting with nucleotide sequences, this wil use prokka to annotate the genomes and pull out the ".faa" files to be used by WhatsGNU. 
 
-Execute the following in the MakeGNU root directory. The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` instead of `-p` and if you want to see the reason for each rule use `-r`. [Sometimes](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#some-command-line-arguments-like-config-cannot-be-followed-by-rule-or-file-targets-is-that-intended-behavior), specifying the rule directly after the `--configfile` argument parser leads to errors.
+Execute the following in the MakeGNU root directory. The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` instead of `-p` and if you want to see the reason for each rule use `-r`. [Sometimes](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#some-command-line-arguments-like-config-cannot-be-followed-by-rule-or-file-targets-is-that-intended-behavior), specifying the rule directly after the `--configfile` argument parser leads to errors. This README won't/can't go over every single Snakemake parameter or error you may encounter, but feel free to leave an issue.
+
+    snakemake --configfile test_config.yaml --use-conda all_query
+
+The directory structure should now look like this. New output is **bolded**
+
+* Data
+    * **Query_faa** (contains your proteomes to be queried)
+    * **Annotations**
+        **prokka_QUERY** (contains all the outputs from prokka)
+    * Query_fna (contains microbial genomes)
+    * ReferenceProteome
+    * Dummy_query (contains a small faa file used to help create the WhatsGNU database)
+    * strain_name_list_faa.csv
+    * strain_name_list_gff.csv
+
+### Downloading and annotating reference genomes
 
     snakemake --configfile test_config.yaml --use-conda download_genomes
     snakemake --configfile test_config.yaml unzip_genome_files
     snakemake --configfile test_config.yaml rename_genome_files
     snakemake --configfile test_config.yaml --use-conda all_database_processing
 
-The directory structure should now look similar to this. New output is **bolded**
+The directory structure should now look similar to this. 
 
 * Data
     * **Genomes**
-    * Queries
-    * References
+    * Query_faa
+    * Query_fna
+    * Annotations
+    * ReferenceProteome
     * Dummy_query
     * strain_name_list_faa.csv
     * strain_name_list_gff.csv
@@ -70,7 +88,9 @@ The directory structure should now look similar to this. New output is **bolded*
         * prokka_GENOMEID (contains all prokka output files)
         * **all_modified_faa**
         * **all_modified_gff**
-  
+
+Once the reference database has been built, and you have additional genomes to analyze, these database processing steps do not need to be rerun.
+
 ### Creating a basic report
     
     snakemake --configfile test_config.yaml --use-conda all_basic
@@ -79,14 +99,19 @@ The directory structure should now look similar to this. New output is **bolded*
 
     snakemake --configfile test_config.yaml --use-conda analyze_pangenome
     snakemake --configfile test_config.yaml --use-conda roary_cleanup
+    
+Once the pangenome analysis has been done on the reference genomes, and you have additional query genomes to analyze, the above steps do not need to be rerun.
+
     snakemake --configfile test_config.yaml --use-conda all_ortholog
   
   Final directory structure should look like this:
   
   * Data
     * Genomes
-    * Queries
-    * References
+    * Query_faa
+    * Query_fna
+    * Annotations
+    * ReferenceProteome
     * Dummy_query
 * Results
     * Annotations
