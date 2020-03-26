@@ -20,7 +20,44 @@ DATA_DIR=str(config["data"])
 #Location of specific files
 REFERENCE=config["reference"]
 
+#Details for annotating with prokka
+GENUS=config["genus"]
+SPECIES=config["species"]
+
 ###Snakemake Rules###
+
+
+##Annotating Query Genomes##
+rule annotate_queries:
+	input:
+		str(DATA_DIR+"/Query_fna/{query}.fna")
+	params:
+		dir=str(DATA_DIR+"/Annotations/prokka_{query}"),
+		prefix="{query}",
+		proteins=str(REFERENCE),
+		refgenus=str(GENUS),
+		refspecies=str(SPECIES)
+	output:
+		str(DATA_DIR+"/Annotations/prokka_{query}/{query}.faa")
+	threads: 2
+	shell:
+		'''
+		prokka --kingdom Bacteria --outdir {params.dir} --cpus {threads} --force --gcode 11 --proteins {params.proteins} --genus {params.refgenus} --species {params.refspecies} --strain {params.prefix} --prefix {params.prefix} --locustag {params.prefix} {input}
+		'''
+
+rule move_query_faa:
+	input:
+		str(DATA_DIR+"/Annotations/prokka_{query}/{query}.faa")
+	output:
+		str(DATA_DIR+"/Query_faa/{query}.faa")
+	shell:
+		'''
+		cp {input} {output}
+		'''
+
+rule all_query:
+	input:
+		expand(str(DATA_DIR+"/Query_faa/{query}.faa"), query=QUERIES)
 
 ##Building Database##
 rule make_genome_list:
@@ -69,14 +106,16 @@ rule annotate_genome:
 	params:
 		dir=str(OUTPUT_DIR+"/Annotations/prokka_{genome}"),
 		prefix="{genome}",
-		proteins=str(REFERENCE)
+		proteins=str(REFERENCE),
+		refgenus=str(GENUS),
+		refspecies=str(SPECIES)
 	threads: 2
 	output:
                 str(OUTPUT_DIR+"/Annotations/prokka_{genome}/{genome}.faa"),
                 str(OUTPUT_DIR+"/Annotations/prokka_{genome}/{genome}.gff")
 	shell:
 		'''
-		prokka --kingdom Bacteria --outdir {params.dir} --cpus {threads} --force --gcode 11 --proteins {params.proteins} --genus Clostridioides --species difficile --strain {params.prefix} --prefix {params.prefix} --locustag {params.prefix} {input}
+		prokka --kingdom Bacteria --outdir {params.dir} --cpus {threads} --force --gcode 11 --proteins {params.proteins} --genus {params.refgenus} --species {params.refspecies} --strain {params.prefix} --prefix {params.prefix} --locustag {params.prefix} {input}
 		'''
 
 #Separate out the files needed for WhatsGNU
