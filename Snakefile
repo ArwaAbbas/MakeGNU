@@ -97,7 +97,7 @@ rule rename_genome_files:
                 names=str(DATA_DIR+"/genome_list.txt")
 	shell:
 		'''
-		bash Scripts/modify_filenames.sh {params.names} {params.dir}
+		bash Scripts/modify_filenames.bh {params.names} {params.dir}
 		'''
 #Annotate genomes with prokka
 rule annotate_genome:

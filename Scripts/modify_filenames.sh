@@ -1,9 +1,8 @@
 #!/bin/bash
-
 names=$1
 dir=$2
 
-for i in `cat $names`; do
+for i in `cat ../TestData/genome_list.txt`;do
 	echo $i
-	mv $2${i}*.fna $2${i}.fna
+	#cp $2${i}*.fna $2${i}.fna
 done
