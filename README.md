@@ -48,7 +48,7 @@ This is how the directory looks like prior to running any rules:
 ### Annotating bacterial genomes to be queried
 If you are starting with nucleotide sequences, this wil use prokka to annotate the genomes and pull out the ".faa" files to be used by WhatsGNU. 
 
-Execute the following in the MakeGNU root directory. The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` instead of `-p` and if you want to see the reason for each rule use `-r`. [Sometimes](https://snakemake.readthedocs.io/en/stable/project_info/faq.html#some-command-line-arguments-like-config-cannot-be-followed-by-rule-or-file-targets-is-that-intended-behavior), specifying the rule directly after the `--configfile` argument parser leads to errors. This README won't/can't go over every single Snakemake parameter or error you may encounter, but feel free to leave an issue.
+Execute the following in the MakeGNU root directory. This README won't/can't go over every single Snakemake parameter or error you may encounter, but here are some helpful tips: The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` and if you want to see the reason for each rule use `-r`. 
 
     snakemake --configfile test_config.yaml --use-conda all_query
 
@@ -57,7 +57,7 @@ The directory structure should now look like this. New output is **bolded**
 * Data
     * **Query_faa** (contains your proteomes to be queried)
     * **Annotations**
-        **prokka_QUERY** (contains all the outputs from prokka)
+        * **prokka_QUERY** (contains all the outputs from prokka)
     * Query_fna (contains microbial genomes)
     * ReferenceProteome
     * Dummy_query (contains a small faa file used to help create the WhatsGNU database)
@@ -85,7 +85,7 @@ The directory structure should now look similar to this.
     * **genome_list.txt**
 * Results
     * **Annotations**
-        * prokka_GENOMEID (contains all prokka output files)
+        * **prokka_GENOMEID** (contains all prokka output files)
         * **all_modified_faa**
         * **all_modified_gff**
 
@@ -93,16 +93,16 @@ Once the reference database has been built, and you have additional genomes to a
 
 ### Creating a basic report
     
-    snakemake --configfile test_config.yaml --use-conda all_basic
+    snakemake all_basic --cores 2 --configfile test_config.yaml
     
 ### Creating an ortholog report
 
-    snakemake --configfile test_config.yaml --use-conda analyze_pangenome
-    snakemake --configfile test_config.yaml --use-conda roary_cleanup
+    snakemake analyze_pangenome --cores 2 --use-conda --configfile test_config.yaml 
+    snakemake roary_cleanup --cores 2 --configfile test_config.yaml
     
 Once the pangenome analysis has been done on the reference genomes, and you have additional query genomes to analyze, the above steps do not need to be rerun.
 
-    snakemake --configfile test_config.yaml --use-conda all_ortholog
+    snakemake all_ortholog --use-conda --cores 2 --configfile test_config.yaml
   
   Final directory structure should look like this:
   
