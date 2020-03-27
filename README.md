@@ -66,10 +66,10 @@ The directory structure should now look like this. New output is **bolded**
 
 ### Downloading and annotating reference genomes
 
-    snakemake --configfile test_config.yaml --use-conda download_genomes
-    snakemake --configfile test_config.yaml unzip_genome_files
-    snakemake --configfile test_config.yaml rename_genome_files
-    snakemake --configfile test_config.yaml --use-conda all_database_processing
+    snakemake download_genomes --cores 2 --use-conda --configfile test_config.yaml 
+    snakemake unzip_genome_files --cores 2 --configfile test_config.yaml
+    snakemake rename_genome_files --cores 2 --configfile test_config.yaml
+    snakemake all_database_processing --cores 2 --use-conda --configfile test_config.yaml
 
 The directory structure should now look similar to this. 
 
@@ -93,7 +93,7 @@ Once the reference database has been built, and you have additional genomes to a
 
 ### Creating a basic report
     
-    snakemake all_basic --cores 2 --configfile test_config.yaml
+    snakemake all_basic --cores 2 --use-conda --configfile test_config.yaml
     
 ### Creating an ortholog report
 
@@ -102,7 +102,7 @@ Once the reference database has been built, and you have additional genomes to a
     
 Once the pangenome analysis has been done on the reference genomes, and you have additional query genomes to analyze, the above steps do not need to be rerun.
 
-    snakemake all_ortholog --use-conda --cores 2 --configfile test_config.yaml
+    snakemake all_ortholog --cores 2 --use-conda --configfile test_config.yaml
   
   Final directory structure should look like this:
   
