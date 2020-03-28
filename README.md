@@ -50,7 +50,7 @@ If you are starting with nucleotide sequences, this wil use prokka to annotate t
 
 Execute the following in the MakeGNU root directory. This README won't/can't go over every single Snakemake parameter or error you may encounter, but here are some helpful tips: The `-p` flag will print out the shell commands that will be executed.  To do a dry run (see the commands without running them), pass `-np` and if you want to see the reason for each rule use `-r`. 
 
-    snakemake --configfile test_config.yaml --use-conda all_query
+    snakemake all_query --cores 2 --use-conda --configfile test_config.yaml
 
 The directory structure should now look like this. New output is **bolded**
 
@@ -123,9 +123,31 @@ Once the pangenome analysis has been done on the reference genomes, and you have
     * **WhatsGNU_basic_results**
     * **WhatsGNU_ortholog_results**
  
-    
-    
+ ### Visualization of WhatsGNU results
+ 
+ Read the full description of the types of plots created here on the WhatsGNU GitHub.
+ 
+        snakemake all_histogram --cores 2 --use-conda --configfile test_config.yaml
 
+New directory structure:
+* Data
+    * Genomes
+    * Query_faa
+    * Query_fna
+    * Annotations
+    * ReferenceProteome
+    * Dummy_query
+* Results
+    * Annotations
+        * prokka_GENOMEID 
+        * all_modified_faa
+        * all_modified_gff
+    * Roary
+    * WhatsGNU_db
+    * WhatsGNU_basic_results
+        * **Plots**
+    * WhatsGNU_ortholog_results
+        *  **Plots**
 
  
   
