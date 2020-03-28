@@ -80,7 +80,7 @@ rule download_genomes:
 		"Envs/WhatsGNU.yaml"
 	shell:
 		'''
-		Scripts/WhatsGNU_get_GenBank_genomes.py -c -r {input} {params}
+		Scripts/WhatsGNU_get_GenBank_genomes2.py -c -r {input} {params}
 		'''
 
 rule unzip_genome_files:
@@ -157,8 +157,8 @@ rule customize_database:
 	#The script puts the modified folder/files adjacent to the input directory.
 	shell:
 		'''
-		Scripts/WhatsGNU_database_customizer.py -p -i -l {input.faa_list} {params.faa_prefix} {params.faa_dir}
-		Scripts/WhatsGNU_database_customizer.py -s -i -l {input.gff_list} {params.gff_prefix} {params.gff_dir}
+		Scripts/WhatsGNU_database_customizer2.py -p -i -l {input.faa_list} {params.faa_prefix} {params.faa_dir}
+		Scripts/WhatsGNU_database_customizer2.py -s -i -l {input.gff_list} {params.gff_prefix} {params.gff_dir}
 		'''
 #This rule runs all the pre-processing steps before creating either a basic or ortholog report:
 rule all_database_processing:
@@ -194,7 +194,7 @@ rule make_basic_db:
 		"Envs/WhatsGNU.yaml"
 	shell:
 		'''
-		WhatsGNU_main.py -m {input.proteins} -o {params.dir} --force -p {params.prefix} {input.dummy_query}
+		Scripts/WhatsGNU_main2.py -m {input.proteins} -o {params.dir} -p {params.prefix} {input.dummy_query}
 		mv {params.db} {params.db_dir}
 		'''
 rule make_basic_report:
@@ -209,7 +209,7 @@ rule make_basic_report:
 		"Envs/WhatsGNU.yaml"
 	shell:
 		'''
-		WhatsGNU_main.py -d {input.db} -dm basic -o {params.dir} --force {input.q}
+		Scripts/WhatsGNU_main2.py -d {input.db} -dm basic -o {params.dir} {input.q}
 		'''
 rule all_basic:
 	input:
@@ -285,7 +285,7 @@ rule make_ortholog_db:
 		"Envs/WhatsGNU.yaml"
 	shell:
 		'''
-		WhatsGNU_main.py -m {input.proteins} -o {params.dir} -r {input.clusters} --force -p {params.prefix} {input.dummy_query}
+		Scripts/WhatsGNU_main2.py -m {input.proteins} -o {params.dir} -r {input.clusters} -p {params.prefix} {input.dummy_query}
 		mv {params.db} {params.db_dir}
 		'''
 
@@ -301,9 +301,33 @@ rule make_ortholog_report:
 		"Envs/WhatsGNU.yaml"
 	shell:
 		'''
-		WhatsGNU_main.py -d {input.db} -dm ortholog -o {params.dir} --force {input.q}
+		Scripts/WhatsGNU_main2.py -d {input.db} -dm ortholog -o {params.dir} {input.q}
 		'''
 rule all_ortholog:
 	input:
 		expand(str(OUTPUT_DIR+"/WhatsGNU_ortholog_results/{query}_WhatsGNU_report.txt"), query=QUERIES)
 		
+##Data visualization##
+
+#Plots histogram of GNU scores for each query
+rule histogram_plot:
+	input:
+		basic=str(OUTPUT_DIR+"/WhatsGNU_basic_results/"),
+		ortho=str(OUTPUT_DIR+"/WhatsGNU_ortholog_results/")
+	params:
+		bdir=str(OUTPUT_DIR+"/WhatsGNU_basic_results/Plots"),
+		odir=str(OUTPUT_DIR+"/WhatsGNU_ortholog_results/Plots")
+	output:
+		bout=str(OUTPUT_DIR+"/WhatsGNU_basic_results/Plots/{query}_WhatsGNU_histogram.pdf"),
+		oout=str(OUTPUT_DIR+"/WhatsGNU_ortholog_results/Plots/{query}_WhatsGNU_histogram.pdf")
+	conda:
+		"Envs/WhatsGNU.yaml"
+	shell:
+		'''
+		Scripts/WhatsGNU_plotter2.py -x -e black {params.bdir} {input.basic}
+		Scripts/WhatsGNU_plotter2.py -x -e black {params.odir} {input.ortho}
+		'''
+rule all_histogram:
+	input:
+		expand(str(OUTPUT_DIR+"/WhatsGNU_basic_results/Plots/{query}_WhatsGNU_histogram.pdf"), query=QUERIES),
+		expand(str(OUTPUT_DIR+"/WhatsGNU_ortholog_results/Plots/{query}_WhatsGNU_histogram.pdf"),query=QUERIES)

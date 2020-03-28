@@ -6,5 +6,6 @@ genomes:
  - 'GCA_003095675.1'
 queries:
  - 'test'
+ - 'test2'
 genus: "Clostridioides"
 species: "difficile"
