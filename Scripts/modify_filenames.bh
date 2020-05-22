@@ -4,5 +4,5 @@ dir=$2
 
 for i in `cat $names`;do
 	echo $i
-	cp $2${i}*.fna $2${i}.fna
+	mv $2${i}*.fna $2${i}.fna
 done
